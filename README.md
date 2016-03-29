@@ -28,3 +28,22 @@
 		users1.add(map11);
 
 ```
+###序列化结果：
+```json
+｛"employees": [
+    {
+        "lastName": "Smith",
+        "firstName": "Anna"
+    },
+    {
+        "lastName": "Jones",
+        "family": [
+            {
+                "lastName": "Smith",
+                "firstName": "Anna"
+            }
+        ],
+        "firstName": "Peter"
+    }
+]｝
+```
