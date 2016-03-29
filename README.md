@@ -3,7 +3,16 @@
 
 ###只需要两行代码就序列化完毕，如下：
 ```java
-List<Map<String, Object>> users = new ArrayList<Map<String, Object>>();
+               
+	
+		Ison ison = new Ison();
+		System.out.println(ison.toJson(users, "employees"));
+		System.out.println(ison.toJson(users));
+```
+
+###初始化数据：
+```java
+ List<Map<String, Object>> users = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("firstName", "Anna");
 		map.put("lastName", "Smith");
@@ -17,11 +26,5 @@ List<Map<String, Object>> users = new ArrayList<Map<String, Object>>();
 		map11.put("firstName", "Anna");
 		map11.put("lastName", "Smith");
 		users1.add(map11);
-		
-		map1.put("family", users1);
-		users.add(map1);
-		
-		Ison ison = new Ison();
-		System.out.println(ison.toJson(users, "employees"));
-		System.out.println(ison.toJson(users));
+
 ```
