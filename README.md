@@ -12,7 +12,7 @@
 
 ###初始化数据：
 ```java
-                List<Map<String, Object>> users = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> users = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("firstName", "Anna");
 		map.put("lastName", "Smith");
