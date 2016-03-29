@@ -37,85 +37,85 @@ public class Ison {
 	private String toJson1(List<Map<String, Object>> list, String rootName) {
 		// "employees":[ {"firstName":"Anna", "lastName":"Smith"},
 		// {"firstName":"Peter", "lastName":"Jones"}]
-		StringBuilder sb = new StringBuilder();
+		sb = new StringBuilder();
 		sb.append("\"" + rootName + "\"");
-		appendColon(sb);
-		appendLSB(sb);
-		append(sb, list);
-		appendRSB(sb);
+		appendColon();
+		appendLSB();
+		append(list);
+		appendRSB();
 		return sb.toString();
 	}
 
 	
 
-	private void append(StringBuilder sb2, List<Map<String, Object>> list) {
+	private void append(List<Map<String, Object>> list) {
 		for (int i = 0; i < list.size(); i++) {
-			appendLCB(sb2);
+			appendLCB();
 			Map<String, Object> map = list.get(i);
 			Set<String> keys = map.keySet();
 			for (Iterator<String> iterator = keys.iterator(); iterator.hasNext();) {
 				String key = (String) iterator.next();
 				Object value = map.get(key);
 
-				appendKey(sb2, key);
+				appendKey(key);
 
-				appendColon(sb2);
+				appendColon();
 
 				if (value instanceof String) {
-					appendValue(sb2, value);
+					appendValue(value);
 				}
 				if(value instanceof List){
-					appendLSB(sb2);
-					append(sb2, (List<Map<String, Object>>)value);
-					appendRSB(sb2);
+					appendLSB();
+					append((List<Map<String, Object>>)value);
+					appendRSB();
 				}
 
 				if (iterator.hasNext()) {
-					appendSeparator(sb2);
+					appendSeparator();
 				}
 			}
-			appendRCB(sb2);
+			appendRCB();
 			if (i != list.size() - 1) {
-				appendSeparator(sb2);
+				appendSeparator();
 			}
 		}
 	}
 
 	
-	private void appendRSB(StringBuilder sb) {
+	private void appendRSB() {
 		sb.append(RIGHT_SQUARE_BRACKETS);
 	}
 
-	private void appendLSB(StringBuilder sb) {
+	private void appendLSB() {
 		sb.append(LEFT_SQUARE_BRACKETS);
 	}
 	
-	private void appendColon(StringBuilder sb2) {
-		sb2.append(COLON);
+	private void appendColon() {
+		sb.append(COLON);
 	}
 
-	private void appendLCB(StringBuilder sb2) {
-		sb2.append(LEFT_CURLY_BRACES);
+	private void appendLCB() {
+		sb.append(LEFT_CURLY_BRACES);
 	}
 
-	private void appendRCB(StringBuilder sb2) {
-		sb2.append(RIGHT_CURLY_BRACES);
+	private void appendRCB() {
+		sb.append(RIGHT_CURLY_BRACES);
 	}
 
-	private void appendSeparator(StringBuilder sb2) {
-		sb2.append(COMMA);
+	private void appendSeparator() {
+		sb.append(COMMA);
 	}
 
-	private void appendValue(StringBuilder sb2, Object value) {
-		sb2.append("\"");
-		sb2.append(value);
-		sb2.append("\"");
+	private void appendValue(Object value) {
+		sb.append("\"");
+		sb.append(value);
+		sb.append("\"");
 	}
 
-	private void appendKey(StringBuilder sb2, String key) {
-		sb2.append("\"");
-		sb2.append(key);
-		sb2.append("\"");
+	private void appendKey(String key) {
+		sb.append("\"");
+		sb.append(key);
+		sb.append("\"");
 	}
 
 	public static void main(String[] args) {
