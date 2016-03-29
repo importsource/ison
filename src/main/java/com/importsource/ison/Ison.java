@@ -38,11 +38,13 @@ public class Ison {
 		// "employees":[ {"firstName":"Anna", "lastName":"Smith"},
 		// {"firstName":"Peter", "lastName":"Jones"}]
 		sb = new StringBuilder();
+		appendLCB();
 		sb.append("\"" + rootName + "\"");
 		appendColon();
 		appendLSB();
 		append(list);
 		appendRSB();
+		appendRCB();
 		return sb.toString();
 	}
 
@@ -119,7 +121,7 @@ public class Ison {
 	}
 
 	public static void main(String[] args) {
-		Ison ison = new Ison();
+		
 		List<Map<String, Object>> users = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("firstName", "Anna");
@@ -138,6 +140,7 @@ public class Ison {
 		map1.put("family", users1);
 		users.add(map1);
 		
+		Ison ison = new Ison();
 		System.out.println(ison.toJson(users, "employees"));
 		System.out.println(ison.toJson(users));
 	}
