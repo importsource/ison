@@ -1,15 +1,12 @@
 package com.importsource.ison;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * 实现一个真正轻量级的json转换器
- * 暂不支持线程安全。
+ * 实现一个真正轻量级的json转换器 暂不支持线程安全。
  * 
  * @author Hezf
  *
@@ -21,18 +18,16 @@ import java.util.Set;
 public class Ison {
 	public static final String COMMA = ",", LEFT_CURLY_BRACES = "{", RIGHT_CURLY_BRACES = "}",
 			LEFT_SQUARE_BRACKETS = "[", RIGHT_SQUARE_BRACKETS = "]", COLON = ":";
-	
+
 	protected StringBuilder sb;
 
 	public String toJson(List<Map<String, Object>> list, String rootName) {
 		return toJson1(list, rootName);
 	}
 
-	
 	public String toJson(List<Map<String, Object>> list) {
 		return toJson1(list, "data");
 	}
-
 
 	private String toJson1(List<Map<String, Object>> list, String rootName) {
 		// "employees":[ {"firstName":"Anna", "lastName":"Smith"},
@@ -48,8 +43,6 @@ public class Ison {
 		return sb.toString();
 	}
 
-	
-
 	private void append(List<Map<String, Object>> list) {
 		for (int i = 0; i < list.size(); i++) {
 			appendLCB();
@@ -63,13 +56,18 @@ public class Ison {
 
 				appendColon();
 
-				if (value instanceof String) {
-					appendValue(value);
-				}
-				if(value instanceof List){
+				if (primitive(value)) {
+					appendValue(value.toString());
+				} else if (value instanceof List) {
 					appendLSB();
-					append((List<Map<String, Object>>)value);
+					try {
+						append((List<Map<String, Object>>) value);
+					} catch (Exception e) {
+						throw new IllegalArgumentException("only List<Map<String, Object>> or Map type supported!");
+					}
 					appendRSB();
+				} else {
+					throw new IllegalArgumentException("only List<Map<String, Object>> or Map type supported!");
 				}
 
 				if (iterator.hasNext()) {
@@ -83,7 +81,10 @@ public class Ison {
 		}
 	}
 
-	
+	private boolean primitive(Object value) {
+		return value instanceof String || value instanceof Integer;
+	}
+
 	private void appendRSB() {
 		sb.append(RIGHT_SQUARE_BRACKETS);
 	}
@@ -91,7 +92,7 @@ public class Ison {
 	private void appendLSB() {
 		sb.append(LEFT_SQUARE_BRACKETS);
 	}
-	
+
 	private void appendColon() {
 		sb.append(COLON);
 	}
@@ -120,5 +121,4 @@ public class Ison {
 		sb.append("\"");
 	}
 
-	
 }
