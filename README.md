@@ -1,5 +1,5 @@
 # Ison
-一个只有100行的超轻量级的json序列化实现。小而美才是王道。我们只支持string等primitive类型和Map<String, Object>。因为这已经能够描述世界上大部分情况了。
+一个只有100行的超轻量级的json序列化实现。小而美才是王道。我们只支持string等primitive类型和Map<String, Object>,因为这已经能够描述世界上大部分情况了。
 
 ###只需要两行代码就序列化完毕，如下：
 ```java
