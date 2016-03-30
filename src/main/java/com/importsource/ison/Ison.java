@@ -6,14 +6,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 实现一个真正轻量级的json转换器 暂不支持线程安全。
- * 
+ * 实现一个真正轻量级的json转换器。
+ * <p>
  * @author Hezf
- *
- *
- *
- *         Data is in name/value pairs Data is separated by commas Curly braces
- *         hold objects Square brackets hold arrays
  */
 public class Ison {
 	public static final String COMMA = ",", LEFT_CURLY_BRACES = "{", RIGHT_CURLY_BRACES = "}",
@@ -21,14 +16,28 @@ public class Ison {
 
 	protected StringBuilder sb;
 
+	/**
+	 * 把list转换成json
+	 * @param list 转换对象
+	 * @param rootName 根节点名称
+	 * @return String 转换结果输出
+	 */
 	public String toJson(List<Map<String, Object>> list, String rootName) {
 		return toJson1(list, rootName);
 	}
 
+	/**
+	 * 把list转换成json,根节点默认为data
+	 * @param list 转换对象
+	 * @return String 转换结果输出
+	 */
 	public String toJson(List<Map<String, Object>> list) {
 		return toJson1(list, "data");
 	}
 
+	
+	
+	
 	private String toJson1(List<Map<String, Object>> list, String rootName) {
 		// "employees":[ {"firstName":"Anna", "lastName":"Smith"},
 		// {"firstName":"Peter", "lastName":"Jones"}]
