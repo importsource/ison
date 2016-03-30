@@ -54,7 +54,7 @@ users1.add(map11);
 ```
 
 ###google的gson与ison的性能对比：
-我们分别用google的gson和ison对12990行数据进行json序列化，结果表明：ison基本完胜，虽然从某些角度来看，这并没有什么太大意义。
+我们分别用google的gson和ison对12990行数据进行json序列化，结果表明：ison基本完胜，虽然从某些角度来看，这并没有什么卵用。
 
 性能测试结果如下：
 
