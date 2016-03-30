@@ -1,5 +1,6 @@
 package com.importsource.ison;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -18,11 +19,23 @@ public class Ison {
 	public static final String COMMA = ",", LEFT_CURLY_BRACES = "{", RIGHT_CURLY_BRACES = "}",
 			LEFT_SQUARE_BRACKETS = "[", RIGHT_SQUARE_BRACKETS = "]", COLON = ":";
 
-	protected StringBuilder sb;
+	/**
+	 * 支持线程安全append
+	 */
+	protected Appendable sb;
+	
+	protected boolean safe=false;
 	
 	public Ison(){
 		sb = new StringBuilder();
 	}
+	
+	public Ison(boolean safe){
+		this.safe=safe;
+		sb = new StringBuffer();
+	}
+	
+	
 
 	
 	
@@ -30,9 +43,14 @@ public class Ison {
 	 * 把对象转换成json,根节点默认为data
 	 * @param obj 转换对象
 	 * @return String 转换结果输出
+	 * @throws IOException 
 	 */
-	public String toJson(Object obj) {
-		return toJson1(obj,"data");
+	public String toJson(Object obj)  {
+		try {
+			return toJson1(obj,"data");
+		} catch (IOException e) {
+			throw new IllegalArgumentException(e.getMessage());
+		}
 		
 	}
 	
@@ -44,9 +62,14 @@ public class Ison {
 	 * @param rootName
 	 *            根节点名称
 	 * @return String 转换结果输出
+	 * @throws IOException 
 	 */
-	public String toJson(Object obj,String rootName) {
-		return toJson1(obj,rootName);
+	public String toJson(Object obj,String rootName)  {
+		try {
+			return toJson1(obj,rootName);
+		} catch (IOException e) {
+			throw new IllegalArgumentException(e.getMessage());
+		}
 	}
 	
 	/**
@@ -57,8 +80,9 @@ public class Ison {
 	 * @param rootName
 	 *            根节点名称
 	 * @return String 转换结果输出
+	 * @throws IOException 
 	 */
-	private String toJsonList(List<Map<String, Object>> list, String rootName) {
+	private String toJsonList(List<Map<String, Object>> list, String rootName) throws IOException {
 		clear();
 		return toJsonList1(list, rootName);
 	}
@@ -71,15 +95,19 @@ public class Ison {
 	 * @param list
 	 *            转换对象
 	 * @return String 转换结果输出
+	 * @throws IOException 
 	 */
-	private String toJsonList(List<Map<String, Object>> list) {
+	@SuppressWarnings("unused")
+	private String toJsonList(List<Map<String, Object>> list) throws IOException {
 		clear();
 		return toJsonList1(list, "data");
 	}
 
-	private String toJson1(Object obj,String rootName) {
+	private String toJson1(Object obj,String rootName) throws IOException {
 		if(obj instanceof List){
-			return toJsonList((List<Map<String, Object>>)obj, rootName);
+			@SuppressWarnings("unchecked")
+			List<Map<String, Object>> obj2 = (List<Map<String, Object>>)obj;
+			return toJsonList(obj2, rootName);
 		}else if(primitive(obj) ){
 			return toJsonPrimitive(obj,rootName);
 		}else{
@@ -88,7 +116,7 @@ public class Ison {
 	}
 	
 
-	private String toJsonPrimitive(Object obj,String rootName) {
+	private String toJsonPrimitive(Object obj,String rootName) throws IOException {
 		clear();
 		appendLCB();
 		appendKey(rootName);
@@ -98,7 +126,7 @@ public class Ison {
 		return sb.toString();
 	}
 
-	private String toJsonList1(List<Map<String, Object>> list, String rootName) {
+	private String toJsonList1(List<Map<String, Object>> list, String rootName) throws IOException {
 		// "employees":[ {"firstName":"Anna", "lastName":"Smith"},
 		// {"firstName":"Peter", "lastName":"Jones"}]
 		
@@ -112,7 +140,8 @@ public class Ison {
 		return sb.toString();
 	}
 
-	private void append(List<Map<String, Object>> list) {
+	
+	private void append(List<Map<String, Object>> list) throws IOException {
 		for (int i = 0; i < list.size(); i++) {
 			appendLCB();
 			Map<String, Object> map = list.get(i);
@@ -136,7 +165,9 @@ public class Ison {
 				}else if (value instanceof List) {
 					appendLSB();
 					try {
-						append((List<Map<String, Object>>) value);
+						@SuppressWarnings("unchecked")
+						List<Map<String, Object>> value2 = (List<Map<String, Object>>) value;
+						append(value2);
 					} catch (Exception e) {
 						throw new IllegalArgumentException("only List<Map<String, Object>> or Map type supported!");
 					}
@@ -166,44 +197,49 @@ public class Ison {
 	   return  value instanceof byte[];
 	}
 
-	private void appendRSB() {
+	private void appendRSB() throws IOException {
 		sb.append(RIGHT_SQUARE_BRACKETS);
 	}
 
-	private void appendLSB() {
+	private void appendLSB() throws IOException {
 		sb.append(LEFT_SQUARE_BRACKETS);
 	}
 
-	private void appendColon() {
+	private void appendColon() throws IOException {
 		sb.append(COLON);
 	}
 
-	private void appendLCB() {
+	private void appendLCB() throws IOException {
 		sb.append(LEFT_CURLY_BRACES);
 	}
 
-	private void appendRCB() {
+	private void appendRCB() throws IOException {
 		sb.append(RIGHT_CURLY_BRACES);
 	}
 
-	private void appendSeparator() {
+	private void appendSeparator() throws IOException {
 		sb.append(COMMA);
 	}
 
-	private void appendValue(Object value) {
+	private void appendValue(Object value) throws IOException {
 		sb.append("\"");
-		sb.append(value);
+		sb.append((CharSequence) value);
 		sb.append("\"");
 	}
 
-	private void appendKey(String key) {
+	private void appendKey(String key) throws IOException {
 		sb.append("\"");
 		sb.append(key);
 		sb.append("\"");
 	}
 	
 	private void clear() {
-		sb=new StringBuilder();
+		if(safe){
+			sb=new StringBuffer();
+		}else{
+			sb=new StringBuilder();
+		}
+		
 	}
 
 }

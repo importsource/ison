@@ -1,5 +1,6 @@
 package com.importsource.ison;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,7 +10,7 @@ import java.util.Map;
 
 public class IsonDemo {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		List<Map<String, Object>> users = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -31,7 +32,7 @@ public class IsonDemo {
 		map1.put("family", users1);
 		users.add(map1);
 
-		Ison ison = new Ison();
+		Ison ison = new Ison(false);
 		System.out.println(ison.toJson(users, "employees"));
 		System.out.println(ison.toJson(users));
 		System.out.println(ison.toJson(1));
