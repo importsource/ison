@@ -1,6 +1,8 @@
 package com.importsource.ison;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,8 @@ public class IsonDemo {
 		Map<String, Object> map11 = new HashMap<String, Object>();
 		map11.put("firstName", "Anna");
 		map11.put("lastName", "Smith");
+		map11.put("bigdecimal", new BigDecimal("20000000000000000000000000000"));
+		map11.put("date", new Date());
 		users1.add(map11);
 
 		map1.put("family", users1);
@@ -30,6 +34,7 @@ public class IsonDemo {
 		Ison ison = new Ison();
 		System.out.println(ison.toJson(users, "employees"));
 		System.out.println(ison.toJson(users));
+		System.out.println(ison.toJson(1));
 	}
 
 }

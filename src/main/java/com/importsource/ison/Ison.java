@@ -1,5 +1,8 @@
 package com.importsource.ison;
 
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +11,7 @@ import java.util.Set;
 /**
  * 实现一个真正轻量级的json转换器。
  * <p>
+ * 
  * @author Hezf
  */
 public class Ison {
@@ -15,33 +19,89 @@ public class Ison {
 			LEFT_SQUARE_BRACKETS = "[", RIGHT_SQUARE_BRACKETS = "]", COLON = ":";
 
 	protected StringBuilder sb;
+	
+	public Ison(){
+		sb = new StringBuilder();
+	}
 
+	
+	
 	/**
-	 * 把list转换成json
-	 * @param list 转换对象
-	 * @param rootName 根节点名称
+	 * 把对象转换成json,根节点默认为data
+	 * @param obj 转换对象
 	 * @return String 转换结果输出
 	 */
-	public String toJson(List<Map<String, Object>> list, String rootName) {
-		return toJson1(list, rootName);
+	public String toJson(Object obj) {
+		return toJson1(obj,"data");
+		
 	}
+	
+	/**
+	 * 把对象转换成json
+	 * 
+	 * @param obj
+	 *            转换对象
+	 * @param rootName
+	 *            根节点名称
+	 * @return String 转换结果输出
+	 */
+	public String toJson(Object obj,String rootName) {
+		return toJson1(obj,rootName);
+	}
+	
+	/**
+	 * 把list转换成json
+	 * 
+	 * @param list
+	 *            转换对象
+	 * @param rootName
+	 *            根节点名称
+	 * @return String 转换结果输出
+	 */
+	private String toJsonList(List<Map<String, Object>> list, String rootName) {
+		clear();
+		return toJsonList1(list, rootName);
+	}
+
+	
 
 	/**
 	 * 把list转换成json,根节点默认为data
-	 * @param list 转换对象
+	 * 
+	 * @param list
+	 *            转换对象
 	 * @return String 转换结果输出
 	 */
-	public String toJson(List<Map<String, Object>> list) {
-		return toJson1(list, "data");
+	private String toJsonList(List<Map<String, Object>> list) {
+		clear();
+		return toJsonList1(list, "data");
 	}
 
+	private String toJson1(Object obj,String rootName) {
+		if(obj instanceof List){
+			return toJsonList((List<Map<String, Object>>)obj, rootName);
+		}else if(primitive(obj) ){
+			return toJsonPrimitive(obj,rootName);
+		}else{
+			throw new IllegalArgumentException("only List<Map<String, Object>> or Map type supported!");
+		}
+	}
 	
-	
-	
-	private String toJson1(List<Map<String, Object>> list, String rootName) {
+
+	private String toJsonPrimitive(Object obj,String rootName) {
+		clear();
+		appendLCB();
+		appendKey(rootName);
+		appendColon();
+		appendValue(obj.toString());
+		appendRCB();
+		return sb.toString();
+	}
+
+	private String toJsonList1(List<Map<String, Object>> list, String rootName) {
 		// "employees":[ {"firstName":"Anna", "lastName":"Smith"},
 		// {"firstName":"Peter", "lastName":"Jones"}]
-		sb = new StringBuilder();
+		
 		appendLCB();
 		sb.append("\"" + rootName + "\"");
 		appendColon();
@@ -64,10 +124,16 @@ public class Ison {
 				appendKey(key);
 
 				appendColon();
-
+				
 				if (primitive(value)) {
 					appendValue(value.toString());
-				} else if (value instanceof List) {
+				} else if(instanceOfByteArray(value)){
+					try {
+						appendValue(new String((byte[])value, "GB2312"));
+					} catch (UnsupportedEncodingException e) {
+						throw new IllegalArgumentException("only List<Map<String, Object>> or Map type supported!");
+					}
+				}else if (value instanceof List) {
 					appendLSB();
 					try {
 						append((List<Map<String, Object>>) value);
@@ -91,7 +157,13 @@ public class Ison {
 	}
 
 	private boolean primitive(Object value) {
-		return value instanceof String || value instanceof Integer;
+		return value instanceof String || value instanceof Integer || value instanceof Double || value instanceof Float
+				|| value instanceof Long || value instanceof Boolean || value instanceof Date
+				|| value instanceof BigDecimal;
+	}
+
+	private boolean instanceOfByteArray(Object value){
+	   return  value instanceof byte[];
 	}
 
 	private void appendRSB() {
@@ -128,6 +200,10 @@ public class Ison {
 		sb.append("\"");
 		sb.append(key);
 		sb.append("\"");
+	}
+	
+	private void clear() {
+		sb=new StringBuilder();
 	}
 
 }
