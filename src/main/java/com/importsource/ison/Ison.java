@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
 /**
  * 实现一个真正轻量级的json转换器。
  * <p>
@@ -110,11 +111,46 @@ public class Ison {
 			return toJsonList(obj2, rootName);
 		}else if(primitive(obj) ){
 			return toJsonPrimitive(obj,rootName);
-		}else{
+		}else if(obj instanceof Map){
+			return toJsonMap(obj,rootName);
+		} else{
 			throw new IllegalArgumentException("only List<Map<String, Object>> or Map type supported!");
 		}
 	}
 	
+
+	private String toJsonMap(Object obj, String rootName)throws IOException {
+		/**
+		 * {
+		 * "root": {
+                "firstName": "Anna",
+                "lastName": "Smith"
+            }
+		 * }
+		 */
+		clear();
+		appendLCB();
+		appendRoot(rootName);
+		appendColon();
+		appendLCB();
+		
+		
+		Map<Object, Object> tmpMap=(Map<Object, Object>)obj;
+		for (Iterator iter = tmpMap.keySet().iterator(); iter.hasNext();) {
+			Object key =  iter.next();
+			Object value = tmpMap.get(key);
+			appendKey(key.toString());
+			appendColon();
+			appendValue(value.toString());
+			if(iter.hasNext()){
+				appendSeparator();
+			}
+		}
+		
+		appendRCB();
+		appendRCB();
+		return sb.toString();
+	}
 
 	private String toJsonPrimitive(Object obj,String rootName) throws IOException {
 		clear();
@@ -131,13 +167,17 @@ public class Ison {
 		// {"firstName":"Peter", "lastName":"Jones"}]
 		
 		appendLCB();
-		sb.append("\"" + rootName + "\"");
+		appendRoot(rootName);
 		appendColon();
 		appendLSB();
 		append(list);
 		appendRSB();
 		appendRCB();
 		return sb.toString();
+	}
+
+	private void appendRoot(String rootName) throws IOException {
+		sb.append("\"" + rootName + "\"");
 	}
 
 	

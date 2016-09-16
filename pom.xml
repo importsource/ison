@@ -5,4 +5,22 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>importsource-ison</name>
   <description>importsource-ison</description>
+  
+  <dependencies>
+     <dependency>
+			<groupId>com.importsource.dbcp</groupId>
+			<artifactId>importsource-dbcp</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.2</version>
+		</dependency>
+  </dependencies>
 </project>

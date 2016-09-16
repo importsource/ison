@@ -32,7 +32,7 @@ public class IsonDemo {
 		map1.put("family", users1);
 		users.add(map1);
 
-		Ison ison = new Ison(false);
+		Ison ison = new Ison();
 		System.out.println(ison.toJson(users, "employees"));
 		System.out.println(ison.toJson(users));
 		System.out.println(ison.toJson(1));
